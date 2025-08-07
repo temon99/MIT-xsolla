@@ -1,0 +1,4 @@
+node_modules/
+auth/storageState.json
+playwright-report/
+.env

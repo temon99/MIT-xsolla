@@ -1,0 +1,25 @@
+{
+  "name": "xsolla-playwright-automation",
+  "version": "1.0.0",
+  "description": "Automated tests for Xsolla Publisher using Playwright",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "figma:download": "node figma/download.js"
+  },
+  "author": "Your Name",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@playwright/test": "^1.43.1",
+    "dotenv": "^17.2.1",
+    "figma-js": "^1.16.1-0",
+    "imap-simple": "^5.1.0",
+    "mailparser": "^3.7.4",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@figma-export/cli": "^4.8.0",
+    "cross-env": "^10.0.0"
+  }
+}
