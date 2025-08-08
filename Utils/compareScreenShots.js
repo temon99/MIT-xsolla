@@ -94,7 +94,25 @@ export function compareScreenshots({
   return diffPixels;
 }
 
+// test.describe.serial(`${componentName} VRT Suite`, () => {
+//   for (const { name: viewport, expectedPath, htmlGen } of viewports) {
+//     test(`${viewport} - ${componentName} visual should match Figma`, async ({ page }) => {
+  // const diffPixels = compareManualScreenshot({
+  //     viewport: `${viewport}`,
+  //       expectedPath,
+  //       actualPath : `./manualScreenshots/${componentName}${viewport}-actual.png`,
+  //       actualCopyPath:`./diff_output/${componentName}${viewport}-actual.png`,
+  //       expectedPath : `./expected_screenshots/${componentName}/${componentName}${viewport}Figma.png`,
+  //       diffPath : `./diff_output/${componentName}${viewport}-diff.png`,
+  //       expectedCopyPath : `./diff_output/${componentName}${viewport}-expected.png`
+  //     });
+//rest should be same
+import { resizeImageIfNeeded } from './imageResizer.js';
+import { getEnabledViewports } from './viewports.js';
+
+
 export function compareManualScreenshot({
+  viewport,
     actualPath,
     actualCopyPath,
   expectedPath,
@@ -111,11 +129,29 @@ export function compareManualScreenshot({
   if (!fs.existsSync(expectedPath)) {
     throw new Error(`❌ Expected (Figma) screenshot not found at ${expectedPath}`);
   }
+  const viewportWidths = getEnabledViewports(['Desktop', 'Laptop', 'Tablet', 'Mobile']);
+  const expectedWidth = viewportWidths[viewport]?.width;
+
+  if (!expectedWidth) {
+    throw new Error(`❌ Invalid viewport: "${viewport}"`);
+  }
+
+      // Resize if needed
+      resizeImageIfNeeded(actualPath, expectedWidth);
+      resizeImageIfNeeded(expectedPath, expectedWidth);
+
 
   const actualBuffer = fs.readFileSync(actualPath);
   const expectedBuffer = fs.readFileSync(expectedPath);
   const actualPNG = PNG.sync.read(actualBuffer);
   const expectedPNG = PNG.sync.read(expectedBuffer);
+
+  // ✅ Ensure viewport is provided
+  if (!viewport) {
+    throw new Error('❌ "viewport" must be provided to compareManualScreenshot');
+  }
+
+
 
   const width = Math.min(actualPNG.width, expectedPNG.width);
   const height = Math.min(actualPNG.height, expectedPNG.height);

@@ -81,13 +81,14 @@ cd playwright-visual-regression
 
 1. npm install
 2. npx playwright install
-3. now create a .env file in project root
-4. In .env file add "BASE_URL=(site url)"
+3. npm install pngjs
+4. now create a .env file in project root
+5. In .env file add "BASE_URL=(site url)"
    For example: BASE_URL=https://sitebuilder.xsolla.com/preview/baseball-clash-main-redesign
-5. create a directory in root with name "expected_screenshots"
-6. download file from drive "Will Upload soon"
-7. extract it then copy all files and paste in expected_screenshot folder in project
-8. run any test with command and root for example : npx playwright test "./tests/Webshop/Main/main.spec.js"
+6. create a directory in root with name "expected_screenshots"
+7. download file from drive "Will Upload soon"
+8. extract it then copy all files and paste in expected_screenshot folder in project
+9. run any test with command and root for example : npx playwright test "./tests/Webshop/Main/main.spec.js"
 
 
 ```Install Playwright browsers:
