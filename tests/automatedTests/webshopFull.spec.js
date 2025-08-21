@@ -5,21 +5,14 @@ import { exec } from 'child_process';
 import { DownloadLogo } from '../../pages/downloadLogo.js';
 import { compareScreenshots } from '../../Utils/compareScreenShots.js';
 import { generateHtmlReport as generateTabbedReportHtml } from '../../utils/HtmlReport/generateTabbedReport.js';
-import { generateHtmlReport  } from '../../utils/HtmlReport/htmlReport.js';
+import { generateHtmlReport } from '../../utils/HtmlReport/htmlReport.js';
 import { loginBeforeEachTest } from '../../Utils/loginSetup.js';
 
 const diffDir = './diff_output';
 const componentName = 'webshopFull';
 
-
-test.beforeEach(async ({ page }) => {
-  await loginBeforeEachTest(page);
-});
-
 const viewports = [
-  
-   { name: 'Laptop', htmlGen: generateHtmlReport },
- 
+  { name: 'Laptop', htmlGen: generateHtmlReport },
   { name: 'Mobile', htmlGen: generateHtmlReport }
 ].map(view => ({
   ...view,
@@ -28,15 +21,23 @@ const viewports = [
 
 const diffResults = Object.fromEntries(viewports.map(({ name }) => [name, { status: 'Pending', diffPixels: null }]));
 
+let page; // shared page
+
 // SERIAL BLOCK — Ensures tests run one after another
 test.describe.serial(`${componentName} VRT Suite`, () => {
+  test.beforeAll(async ({ browser }) => {
+    // ✅ login once before all tests
+    const context = await browser.newContext();
+    page = await context.newPage();
+    await loginBeforeEachTest(page);
+  });
+
   for (const { name: viewport, expectedPath, htmlGen } of viewports) {
-    test(`${viewport} - ${componentName} visual should match Figma`, async ({ page }) => {
+    test(`${viewport} - ${componentName} visual should match Figma`, async () => {
       const pageObject = new DownloadLogo(page, viewport);
       await pageObject.goto();
 
       const { cropped } = await pageObject.takeScreenshot();
-      pageObject.filePrefix;
       const actualBuffer = fs.readFileSync(cropped);
 
       const diffPixels = compareScreenshots({

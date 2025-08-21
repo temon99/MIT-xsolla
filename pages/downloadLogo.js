@@ -21,10 +21,10 @@ export class DownloadLogo {
     await goToPage(this.page, this.slug, {
       selector: this.selector,
       timeout: 20000,
-      scroll: true
+      scroll: false
     });
   }
-
+    
   async takeScreenshot() {
     const helper = new ScreenshotHelper(this.page, this.viewport, {
       selector: this.selector,

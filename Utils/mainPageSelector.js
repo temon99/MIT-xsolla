@@ -1,6 +1,6 @@
 export const mainPageSelectors = {
-    downloadLogo: '#site-builder-editor'
-
+    downloadLogo: '#root'
+    // downloadLogo: '//body/noscript'
 
 
 

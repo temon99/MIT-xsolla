@@ -3,8 +3,12 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   use: {
-    headless: false,
-    viewport: { width: 1280, height: 720 },
+    viewport:null,
+    // headless: false,
+    launchOptions: {
+      headless: false,
+      args: ['--start-maximized']
+    },
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },

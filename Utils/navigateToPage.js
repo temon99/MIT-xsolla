@@ -16,17 +16,19 @@ export async function goToPage(page, slug, options = {}) {
   const {
     // selector,
     timeout = 20000,
-    disableAnimation = true,
+    disableAnimation = false,
     scroll= false
   } = options;
+// 
 
-  const url = `${process.env.WEB_SHOP_Main}`;
+  // const url = `${process.env.WEB_SHOP_Main}`;
+  const url = `${process.env.WEB_SHOP}`;
   console.log('Navigating to:', url);
-  await page.goto(url, { waitUntil: 'domcontentloaded' });
+  await page.goto(url, { waitUntil: 'networkidle' });
 
-  if (disableAnimation) {
-    await disableAnimations(page);
-  }
+  // if (disableAnimation) {
+  //   await disableAnimations(page);
+  // }
   if(scroll){
     await scrollPage(page);
   }
