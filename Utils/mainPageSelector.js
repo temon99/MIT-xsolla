@@ -1,6 +1,6 @@
 export const mainPageSelectors = {
-    downloadLogo: '#root'
-    // downloadLogo: '//body/noscript'
+    downloadLogo: '#root',
+    freeGift:'[data-testid^="section-"]'
 
 
 
