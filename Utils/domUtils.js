@@ -35,52 +35,105 @@ import sharp from 'sharp';
 // }
 
 export async function maskEverythingExcept(page, selector, block = 'center') {
-  await page.evaluate((targetSelector,maskScrollBlock) => {
-    const getVisibleContainer = (el) => {
-      let current = el;
-      while (current && current !== document.body) {
-        const style = window.getComputedStyle(current);
-        const box = current.getBoundingClientRect();
-        const visible = box.width > 0 && box.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
-        if (visible) return current;
-        current = current.parentElement;
-      }
-      return el;
-    };
+  // await page.evaluate((targetSelector,maskScrollBlock) => {
+  //   const getVisibleContainer = (el) => {
+  //     let current = el;
+  //     while (current && current !== document.body) {
+  //       const style = window.getComputedStyle(current);
+  //       const box = current.getBoundingClientRect();
+  //       const visible = box.width > 0 && box.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+  //       if (visible) return current;
+  //       current = current.parentElement;
+  //     }
+  //     return el;
+  //   };
  
-    const targetEl = document.querySelector(targetSelector);
-    if (!targetEl) return;
+  //   const targetEl = document.querySelector(targetSelector);
+  //   if (!targetEl) return;
 
-    // Find the outer visible container
-    const container = getVisibleContainer(targetEl);
+  //   // Find the outer visible container
+  //   const container = getVisibleContainer(targetEl);
 
-    const maskSiblings = (element) => {
-      const parent = element.parentElement;
-      if (!parent) return;
+  //   const maskSiblings = (element) => {
+  //     const parent = element.parentElement;
+  //     if (!parent) return;
 
-      for (const sibling of parent.children) {
-        if (sibling !== element) {
+  //     for (const sibling of parent.children) {
+  //       if (sibling !== element) {
+  //         sibling.style.visibility = 'hidden';
+  //         sibling.style.opacity = '0';
+  //       }
+  //     }
+
+  //     // Freeze animations
+  //     element.style.animation = 'none';
+  //     element.style.transition = 'none';
+
+  //     // Recurse upward
+  //     maskSiblings(parent);
+  //   };
+
+  //   maskSiblings(container);
+
+  //   // Ensure container is visible
+  //   container.style.visibility = 'visible';
+  //   container.style.opacity = '1';
+  //   container.style.zIndex = '999999';
+  //   container.scrollIntoView({ behavior: 'instant', block:maskScrollBlock });
+  // }, selector);
+await page.evaluate((targetSelector, maskScrollBlock) => {
+  const getVisibleContainer = (el) => {
+    let current = el;
+    while (current && current !== document.body) {
+      const style = window.getComputedStyle(current);
+      const box = current.getBoundingClientRect();
+      const visible = box.width > 0 && box.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+      if (visible) return current;
+      current = current.parentElement;
+    }
+    return el;
+  };
+
+  const targetEl = document.querySelector(targetSelector);
+  if (!targetEl) return;
+
+  // Find the outer visible container
+  const container = getVisibleContainer(targetEl);
+
+  const maskSiblings = (element) => {
+    const parent = element.parentElement;
+    if (!parent) return;
+
+    for (const sibling of parent.children) {
+      if (sibling !== element) {
+        const style = window.getComputedStyle(sibling);
+        const hasBackground = style.backgroundColor !== 'rgba(0, 0, 0, 0)' || style.backgroundImage !== 'none';
+
+        // Only hide siblings without background
+        if (!hasBackground) {
           sibling.style.visibility = 'hidden';
           sibling.style.opacity = '0';
         }
       }
+    }
 
-      // Freeze animations
-      element.style.animation = 'none';
-      element.style.transition = 'none';
+    // Freeze animations
+    element.style.animation = 'none';
+    element.style.transition = 'none';
 
-      // Recurse upward
-      maskSiblings(parent);
-    };
+    // Recurse upward
+    maskSiblings(parent);
+  };
 
-    maskSiblings(container);
+  maskSiblings(container);
 
-    // Ensure container is visible
-    container.style.visibility = 'visible';
-    container.style.opacity = '1';
-    container.style.zIndex = '999999';
-    container.scrollIntoView({ behavior: 'instant', block:maskScrollBlock });
-  }, selector);
+  // Ensure container is visible
+  container.style.visibility = 'visible';
+  container.style.opacity = '1';
+  container.style.zIndex = '999999';
+  container.scrollIntoView({ behavior: 'instant', block: maskScrollBlock });
+}, selector);
+
 }
 
 

@@ -27,7 +27,6 @@ export class ScreenshotHelper {
 
   // Force exact device scaling to prevent rendering shrink
   await this.page.emulateMedia({ media: 'screen' });
-  console.log('1111asdas');
   await this.page.addStyleTag({
     content: `
       ::-webkit-scrollbar { display: none !important; }
@@ -39,16 +38,13 @@ export class ScreenshotHelper {
       }
     `
   });
-  console.log('asdas');
   const maskedFullPagePath = `${this.diffDir}/${this.filePrefix}${this.viewport}-masked-full.png`;
   const croppedElementPath = `${this.diffDir}/${this.filePrefix}${this.viewport}.png`;
-  console.log('qqqqqs');
   await this.page.waitForSelector(this.selector, { timeout: 20000 });
   await this.page.$eval(this.selector, (el, block) =>
     el.scrollIntoView({ behavior: 'instant', block }),
     this.scrollBlock
   );
-  console.log('33333');
   await this.page.waitForTimeout(this.waitAfterScroll);
   await maskEverythingExcept(this.page, this.selector);
   await this.page.waitForTimeout(this.waitAfterScroll);

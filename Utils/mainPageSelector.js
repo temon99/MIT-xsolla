@@ -1,6 +1,6 @@
 export const mainPageSelectors = {
     downloadLogo: '#root',
-    freeGift:'[data-testid^="section-"]'
+    freeGift:'div.new-store.block-content'
 
 
 
